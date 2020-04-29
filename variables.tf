@@ -115,13 +115,13 @@ variable "access_logs" {
 variable "subnets" {
   description = "A list of subnets to associate with the load balancer. e.g. ['subnet-1a2b3c4d','subnet-1a2b3c4e','subnet-1a2b3c4f']"
   type        = list(string)
-  default     = null
+  default     = []
 }
 
 variable "subnet_mapping" {
   description = "A list of subnet mapping blocks describing subnets to attach to network load balancer"
-  type        = list(map(string))
-  default     = []
+  # type        = list(map(string))
+  default = {}
 }
 
 variable "tags" {
