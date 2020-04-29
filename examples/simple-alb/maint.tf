@@ -14,7 +14,7 @@ resource "aws_security_group" "sg" {
 }
 
 module "vpc" {
-  source = "/Users/amanda.carvalho/Documents/data/youse-seguradora/terraform-aws-vpc"
+  source = "github.com/youse-seguradora/terraform-aws-vpc"
 
   name = var.vpc_name
 
