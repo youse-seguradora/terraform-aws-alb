@@ -12,10 +12,7 @@ import (
 func TestSimpleAlb(t *testing.T) {
 	t.Parallel()
 
-	// Expected values
-	// expVpcCidr := "10.120.0.0/16"
 	expectedName := fmt.Sprintf("vpc-terratest-%s", strings.ToLower(random.UniqueId()))
-	// awsRegion := aws.GetRandomStableRegion(t, nil, nil)
 
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../examples/simple-alb",
@@ -30,8 +27,5 @@ func TestSimpleAlb(t *testing.T) {
 
 	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
 	terraform.InitAndApply(t, terraformOptions)
-
-	// vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr_block")
-	// assert.Equal(t, vpcCidr, expVpcCidr)
 
 }
