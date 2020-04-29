@@ -61,10 +61,6 @@ module "alb" {
       target_group_index = 0
     }
   ]
-
-  tags = {
-    Environment = "Test"
-  }
 }
 
 variable "vpc_name" {}
