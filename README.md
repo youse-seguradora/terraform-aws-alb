@@ -254,7 +254,7 @@ module "lb" {
 | name | The resource name and Name tag of the load balancer. | `string` | `null` | no |
 | name\_prefix | The resource name prefix and Name tag of the load balancer. | `string` | `null` | no |
 | security\_groups | The security groups to attach to the load balancer. e.g. ["sg-edcd9784","sg-edcd9785"] | `list(string)` | `[]` | no |
-| subnet\_mapping | A list of subnet mapping blocks describing subnets to attach to network load balancer | `map` | `{}` | no |
+| subnet\_mapping | A list of subnet mapping blocks describing subnets to attach to network load balancer | `list(map(string))` | `[]` | no |
 | subnets | A list of subnets to associate with the load balancer. e.g. ['subnet-1a2b3c4d','subnet-1a2b3c4e','subnet-1a2b3c4f'] | `list(string)` | `[]` | no |
 | tags | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | target\_group\_tags | A map of tags to add to all target groups | `map(string)` | `{}` | no |

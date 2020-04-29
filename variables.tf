@@ -120,8 +120,8 @@ variable "subnets" {
 
 variable "subnet_mapping" {
   description = "A list of subnet mapping blocks describing subnets to attach to network load balancer"
-  # type        = list(map(string))
-  default = {}
+  type        = list(map(string))
+  default     = []
 }
 
 variable "tags" {
