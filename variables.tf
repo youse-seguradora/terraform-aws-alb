@@ -179,6 +179,7 @@ variable "target_port" {
 }
 
 variable "target_count" {
-  type    = number
-  default = 0
+  description = "Count to create ou not resource to target group attachment"
+  type        = number
+  default     = 0
 }
