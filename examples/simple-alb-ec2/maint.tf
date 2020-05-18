@@ -73,7 +73,7 @@ module "vpc" {
 
   cidr = "10.100.0.0/16"
 
-  azs                    = ["us-east-1a", "us-east-1c"]
+  azs                    = ["us-east-2a", "us-east-2c"]
   compute_public_subnets = ["10.100.0.0/24", "10.100.5.0/24"]
 }
 
