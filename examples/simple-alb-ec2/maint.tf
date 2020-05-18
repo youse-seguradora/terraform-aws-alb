@@ -71,10 +71,10 @@ module "vpc" {
 
   name = var.vpc_name
 
-  cidr = "10.120.0.0/16"
+  cidr = "10.100.0.0/16"
 
   azs                    = ["us-east-1a", "us-east-1c"]
-  compute_public_subnets = ["10.120.0.0/24", "10.120.5.0/24"]
+  compute_public_subnets = ["10.100.0.0/24", "10.100.5.0/24"]
 }
 
 output "public_subnets" {
