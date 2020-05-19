@@ -247,9 +247,8 @@ resource "aws_lb_listener_certificate" "https_listener" {
 }
 
 resource "aws_lb_target_group_attachment" "lb_target_attachment" {
-  count = var.target_count
-
-  target_group_arn = var.target_groups_arn_attach
-  target_id        = var.target_id
-  port             = var.target_port
+  count            = var.create_lb && length(var.target_group_attachment) != 0 ? length(var.target_groups) : 0
+  target_group_arn = aws_lb_target_group.main[count.index].id
+  target_id        = lookup(var.target_group_attachment[count.index], "target_id")
+  port             = lookup(var.target_group_attachment[count.index], "target_port")
 }
