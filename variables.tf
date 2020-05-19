@@ -160,26 +160,8 @@ variable "vpc_id" {
   default     = null
 }
 
-variable "target_groups_arn_attach" {
-  description = "Target Group ARN to attach"
+variable "target_group_attachment" {
+  description = "A list of maps containing key/value pairs that define the target groups attachment"
   type        = any
-  default     = {}
-}
-
-variable "target_id" {
-  description = "ID instance to attach in Target Group"
-  type        = any
-  default     = {}
-}
-
-variable "target_port" {
-  description = "Port Target Group"
-  type        = number
   default     = null
-}
-
-variable "target_count" {
-  description = "Count to create ou not resource to target group attachment"
-  type        = number
-  default     = 0
 }
