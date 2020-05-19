@@ -107,6 +107,13 @@ module "alb" {
     }
   ]
 
+  target_group_attachment = [
+    {
+      target_id   = module.ec2.id[0]
+      target_port = 4440
+    }
+  ]
+
   http_tcp_listeners = [
     {
       port               = 80
@@ -114,10 +121,6 @@ module "alb" {
       target_group_index = 0
     }
   ]
-  target_count             = 1
-  target_groups_arn_attach = module.alb.target_group_arns[0]
-  target_id                = module.ec2.id[0]
-  target_port              = 4440
 }
 
 variable "vpc_name" {}
