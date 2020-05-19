@@ -163,5 +163,5 @@ variable "vpc_id" {
 variable "target_group_attachment" {
   description = "A list of maps containing key/value pairs that define the target groups attachment"
   type        = any
-  default     = null
+  default     = []
 }
