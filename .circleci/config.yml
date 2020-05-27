@@ -50,7 +50,7 @@ jobs:
           name: Install Terraform
           command: |
             if ! [ -x "$(command -v terraform)" ]; then
-              wget -O /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
+              wget -O /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
               sudo unzip /tmp/terraform.zip -d /usr/local/bin;
               terraform --version
             fi;
