@@ -91,7 +91,7 @@ module "alb" {
   source = "../../"
 
 
-  name = "my-alb"
+  name = "my-alb-ec2"
 
   load_balancer_type = "application"
 
