@@ -8,16 +8,16 @@ These types of resources are supported:
 * [Load Balancer Listener](https://www.terraform.io/docs/providers/aws/r/lb_listener.html)
 * [Load Balancer Listener Certificate](https://www.terraform.io/docs/providers/aws/r/lb_listener_certificate.html)
 * [Load Balancer Listener default actions](https://www.terraform.io/docs/providers/aws/r/lb_listener.html) - All actions supported.
+* [Load Balancer Listener Rule](https://www.terraform.io/docs/providers/aws/r/lb_listener_rule.html)
 * [Target Group](https://www.terraform.io/docs/providers/aws/r/lb_target_group.html)
 
 Not supported (yet):
 
-* [Load Balancer Listener Rule](https://www.terraform.io/docs/providers/aws/r/lb_listener_rule.html)
 * [Target Group Attachment](https://www.terraform.io/docs/providers/aws/r/lb_target_group_attachment.html)
 
 ## Terraform versions
 
-Terraform 0.12. Pin module version to `~> v5.0`. Submit pull-requests to `master` branch.
+Terraform 0.12 and newer. Pin module version to `~> v5.0`. Submit pull-requests to `master` branch.
 
 Terraform 0.11. Pin module version to `~> v3.0`. Submit pull-requests to `terraform011` branch.
 
@@ -46,7 +46,7 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "default"
+      name_prefix      = "pref-"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
@@ -97,7 +97,7 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "default"
+      name_prefix      = "pref-"
       backend_protocol = "HTTPS"
       backend_port     = 443
       target_type      = "instance"
@@ -138,6 +138,87 @@ module "alb" {
 }
 ```
 
+Cognito Authentication only on certain routes, with redirects for other routes:
+
+```hcl
+module "alb" {
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~> 5.0"
+  
+  name = "my-alb"
+
+  load_balancer_type = "application"
+
+  vpc_id             = "vpc-abcde012"
+  subnets            = ["subnet-abcde012", "subnet-bcde012a"]
+  security_groups    = ["sg-edcd9784", "sg-edcd9785"]
+  
+  access_logs = {
+    bucket = "my-alb-logs"
+  }
+
+  target_groups = [
+    {
+      name_prefix      = "default"
+      backend_protocol = "HTTPS"
+      backend_port     = 443
+      target_type      = "instance"
+    }
+  ]
+
+  https_listeners = [
+    {
+      port                 = 443
+      certificate_arn      = "arn:aws:iam::123456789012:server-certificate/test_cert-123456789012"
+    }
+  ]
+
+  https_listener_rules = [
+    {
+      https_listener_index = 0
+      priority             = 5000
+
+      actions = [{
+        type        = "redirect"
+        status_code = "HTTP_302"
+        host        = "www.youtube.com"
+        path        = "/watch"
+        query       = "v=dQw4w9WgXcQ"
+        protocol    = "HTTPS"
+      }]
+
+      conditions = [{
+        path_patterns = ["/onboarding", "/docs"]
+      }]
+    },
+    {
+      https_listener_index = 0
+      priority             = 2
+
+      actions = [
+        {
+          type = "authenticate-cognito"
+
+          user_pool_arn       = "arn:aws:cognito-idp::123456789012:userpool/test-pool"
+          user_pool_client_id = "6oRmFiS0JHk="
+          user_pool_domain    = "test-domain-com"
+        },
+        {
+          type               = "forward"
+          target_group_index = 0
+        }
+      ]
+
+      conditions = [{
+        path_patterns = ["/protected-route", "private/*"]
+      }]
+    }
+  ]
+}
+```
+
+When you're using ALB Listener rules, make sure that every rule's `actions` block ends in a `forward`, `redirect`, or `fixed-response` action so that every rule will resolve to some sort of an HTTP response. Checkout the [AWS documentation](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-update-rules.html) for more information.
+
 ### Network Load Balancer (TCP_UDP, UDP, TCP and TLS listeners)
 
 ```hcl
@@ -158,7 +239,7 @@ module "nlb" {
 
   target_groups = [
     {
-      name_prefix      = "default"
+      name_prefix      = "pref-"
       backend_protocol = "TCP"
       backend_port     = 80
       target_type      = "ip"
@@ -220,14 +301,14 @@ module "lb" {
 
 | Name | Version |
 |------|---------|
-| terraform | ~> 0.12 |
-| aws | ~> 2.54 |
+| terraform | >= 0.12.6, < 0.14 |
+| aws | >= 2.54, < 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.54 |
+| aws | >= 2.54, < 4.0 |
 
 ## Inputs
 
@@ -252,7 +333,7 @@ module "lb" {
 | load\_balancer\_type | The type of load balancer to create. Possible values are application or network. | `string` | `"application"` | no |
 | load\_balancer\_update\_timeout | Timeout value when updating the ALB. | `string` | `"10m"` | no |
 | name | The resource name and Name tag of the load balancer. | `string` | `null` | no |
-| name\_prefix | The resource name prefix and Name tag of the load balancer. | `string` | `null` | no |
+| name\_prefix | The resource name prefix and Name tag of the load balancer. Cannot be longer than 6 characters | `string` | `null` | no |
 | security\_groups | The security groups to attach to the load balancer. e.g. ["sg-edcd9784","sg-edcd9785"] | `list(string)` | `[]` | no |
 | subnet\_mapping | A list of subnet mapping blocks describing subnets to attach to network load balancer | `list(map(string))` | `[]` | no |
 | subnets | A list of subnets to associate with the load balancer. e.g. ['subnet-1a2b3c4d','subnet-1a2b3c4e','subnet-1a2b3c4f'] | `list(string)` | `[]` | no |
